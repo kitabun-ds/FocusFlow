@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Achievements — FocusFlow{% endblock %}
+{% block body_class %}achievements-body{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ url_for('static', filename='css/achievements.css') }}">{% endblock %}
+
+{% block content %}
+<div class="achievements-shell" id="achievementsPage">
+    <header class="achievements-heading">
+        <p class="achievements-eyebrow">ACHIEVEMENTS</p>
+        <h1>Celebrate the progress<br class="achievements-title-break"> you've earned.</h1>
+        <p class="achievements-subtitle">Your focus, consistency, and commitment — all in one place.</p>
+    </header>
+
+    <section class="achievement-lead-grid" aria-label="Your activity overview">
+        <article class="achievement-glass achievement-streak-card">
+            <div class="achievement-card-top"><p class="achievement-label">CURRENT STREAK</p><span class="material-symbols-outlined achievement-icon" aria-hidden="true">local_fire_department</span></div>
+            <div class="streak-content">
+                <div><div class="streak-value"><strong data-streak-days>0</strong><span>DAYS</span></div><p class="streak-message" data-streak-message>Start today to build your first streak.</p></div>
+                <div class="streak-orbit" aria-hidden="true"><span class="streak-orbit-track"></span><span class="streak-orbit-fill" data-streak-ring></span><span class="material-symbols-outlined">local_fire_department</span></div>
+            </div>
+        </article>
+
+        <article class="achievement-glass achievement-consistency-card">
+            <div class="achievement-card-top"><p class="achievement-label">CONSISTENCY</p><span class="material-symbols-outlined achievement-icon" aria-hidden="true">calendar_month</span></div>
+            <div class="consistency-summary"><strong data-consistency>0%</strong><span><b data-active-days>0</b> / <b data-tracked-days>0</b> active days this month</span></div>
+            <div class="activity-map-heading"><span>RECENT ACTIVITY</span><small>Last 90 days</small></div>
+            <div class="activity-heatmap" data-heatmap role="img" aria-label="Activity over the last 90 days"></div>
+            <div class="heatmap-legend"><span>Less</span><i class="heat-intensity-0"></i><i class="heat-intensity-1"></i><i class="heat-intensity-2"></i><i class="heat-intensity-3"></i><i class="heat-intensity-4"></i><span>More</span></div>
+            <p class="best-consistency">BEST CONSISTENCY <strong><span data-best-streak>0</span> consecutive days</strong></p>
+        </article>
+    </section>
+
+    <section class="achievement-glass productivity-card" aria-labelledby="productivity-title">
+        <div class="productivity-intro"><p class="achievement-label">A WIDER VIEW</p><h2 id="productivity-title">PRODUCTIVITY PROGRESS</h2><p>A broader view of how you're progressing this month.</p></div>
+        <div class="productivity-content">
+            <div class="overall-progress">
+                <div class="progress-ring" data-progress-ring style="--progress-angle: 0deg"><div><strong data-overall-progress>0%</strong><span>OVERALL PROGRESS</span></div></div>
+                <p>this month</p>
+            </div>
+            <div class="progress-metrics">
+                <div class="progress-metric"><div><span>Consistency</span><strong data-metric-consistency>0%</strong></div><div class="metric-track"><span data-bar-consistency></span></div><small>Active days among recorded days this month</small></div>
+                <div class="progress-metric"><div><span>Progress</span><strong data-metric-progress>0%</strong></div><div class="metric-track"><span data-bar-progress></span></div><small>Average progress across your current goals</small></div>
+                <div class="progress-metric"><div><span>Discipline</span><strong data-metric-discipline>0%</strong></div><div class="metric-track"><span data-bar-discipline></span></div><small>Focus-session days among recorded days this month</small></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="achievement-stats" aria-label="Your FocusFlow statistics">
+        <article class="achievement-glass stat-card"><span class="material-symbols-outlined stat-icon" aria-hidden="true">timer</span><p class="achievement-label">FOCUS TIME</p><strong data-focus-time>0m</strong><span class="stat-caption">completed focus sessions</span></article>
+        <article class="achievement-glass stat-card"><span class="material-symbols-outlined stat-icon" aria-hidden="true">task_alt</span><p class="achievement-label">GOALS COMPLETED</p><strong data-goals-completed>0</strong><span class="stat-caption">recorded goal completions</span></article>
+        <article class="achievement-glass stat-card"><span class="material-symbols-outlined stat-icon" aria-hidden="true">play_circle</span><p class="achievement-label">FOCUS SESSIONS</p><strong data-focus-sessions>0</strong><span class="stat-caption">recorded sessions</span></article>
+        <article class="achievement-glass stat-card"><span class="material-symbols-outlined stat-icon" aria-hidden="true">calendar_check</span><p class="achievement-label">ACTIVE DAYS</p><strong data-total-active-days>0</strong><span class="stat-caption">days with recorded activity</span></article>
+    </section>
+
+    <aside class="achievement-glass keep-going-banner">
+        <div class="keep-going-mark" aria-hidden="true"><span class="material-symbols-outlined">waves</span></div>
+        <div><p class="achievement-label">KEEP GOING</p><h2>Small steps. Big progress.</h2><p>Your consistency today builds the extraordinary tomorrow.</p></div>
+        <span class="keep-going-line" aria-hidden="true"></span>
+    </aside>
+</div>
+{% endblock %}
+
+{% block scripts %}<script src="{{ url_for('static', filename='js/achievements.js') }}"></script>{% endblock %}

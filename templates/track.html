@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Track — FocusFlow{% endblock %}
+{% block body_class %}track-body{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ url_for('static', filename='css/track.css') }}">{% endblock %}
+
+{% block content %}
+<div class="track-shell" id="trackPage">
+    <header class="track-heading">
+        <a class="track-back" href="{{ url_for('home') }}"><span aria-hidden="true">←</span> Track</a>
+            <h1>Your Progress</h1>
+        <p class="track-subtitle">See how far you've come.</p>
+    </header>
+
+    <section class="track-overview" data-track-view="overview">
+        <div class="track-periods" role="group" aria-label="Progress period">
+            <button class="track-period-card active" type="button" data-open-view="daily" aria-pressed="true">
+                <span>DAILY</span><strong data-period="daily">—</strong><small>progress</small>
+            </button>
+            <button class="track-period-card" type="button" data-open-view="monthly" aria-pressed="false">
+                <span>MONTHLY</span><strong data-period="monthly">—</strong><small>progress</small>
+            </button>
+            <button class="track-period-card" type="button" data-open-view="yearly" aria-pressed="false">
+                <span>YEARLY</span><strong data-period="yearly">—</strong><small>progress</small>
+            </button>
+        </div>
+
+        <section class="track-card track-trend-card">
+            <div class="track-card-heading"><div><p class="track-label">THE LAST SEVEN DAYS</p><h2>Progress Trend</h2></div><span class="track-heading-mark">↗</span></div>
+            <div class="track-chart-wrap track-weekly-chart-wrap"><svg class="track-chart track-weekly-chart" data-chart="overview" viewBox="0 0 800 320" role="group" aria-label="Progress trend for the last seven days"></svg><div class="track-point-tooltip" data-chart-tooltip="overview" role="status" hidden></div><p class="track-chart-empty" data-chart-empty="overview" hidden>No progress recorded yet. Your progress will appear here as you work toward your goals.</p></div>
+            <div class="track-chart-foot"><span>Progress across saved days</span><span data-overview-focus>0 focus time</span></div>
+        </section>
+
+        <section class="track-card track-history-card">
+            <div class="track-card-heading"><div><p class="track-label">YOUR JOURNEY</p><h2>Progress History</h2></div><button class="track-text-button" type="button" data-toggle-history>View Full History <span aria-hidden="true">→</span></button></div>
+            <div class="track-history-head" aria-hidden="true"><span>Date</span><span>Progress</span><span>Goals</span><span>Focus Time</span><span></span></div>
+            <div class="track-history-list" data-history-list></div>
+            <p class="track-empty-inline" data-history-empty hidden>No saved days yet. Your first goal update or completed focus session will appear here.</p>
+        </section>
+    </section>
+
+    <section class="track-detail-view" data-track-view="daily" hidden>
+        <div class="track-view-heading"><button class="track-back" type="button" data-back-overview><span aria-hidden="true">←</span> Back</button><h1>Daily Progress</h1></div>
+        <div class="track-date-picker"><button type="button" class="track-arrow" data-date-step="-1" aria-label="Previous day">‹</button><label class="track-date-label"><span aria-hidden="true">▦</span><input type="date" data-date-input aria-label="Choose a day"></label><button type="button" class="track-arrow" data-date-step="1" aria-label="Next day">›</button></div>
+        <div class="track-stat-row">
+            <article class="track-card track-stat-card"><p class="track-label">DAILY PROGRESS</p><strong data-daily-progress>—</strong><span data-daily-goals>Goals —</span></article>
+            <article class="track-card track-stat-card"><p class="track-label">FOCUS TIME</p><strong data-daily-focus>—</strong><span>Recorded sessions</span></article>
+        </div>
+        <section class="track-card">
+            <div class="track-card-heading"><div><p class="track-label">SAVED PROGRESS POINTS</p><h2>Daily Progress</h2></div><span data-daily-date-label></span></div>
+            <div class="track-chart-wrap track-daily-chart-wrap"><svg class="track-chart" data-chart="daily" viewBox="0 0 800 260" role="group" aria-label="Saved daily progress points. Select a point to view its details."></svg><p class="track-chart-empty" data-chart-empty="daily" hidden>No progress recorded for this day.</p><div class="track-detail-panel track-daily-tooltip" data-daily-point-detail role="status" aria-live="polite" hidden></div></div>
+        </section>
+        <div class="track-two-column">
+            <section class="track-card"><div class="track-card-heading"><div><p class="track-label">COMPLETED SESSIONS</p><h2>Daily Focus Time</h2></div></div><div class="track-chart-wrap track-bar-wrap"><svg class="track-bars" data-bars="daily" viewBox="0 0 800 190" role="img" aria-label="Focus time by hour for this day"></svg><p class="track-chart-empty" data-bars-empty="daily" hidden>No focus sessions recorded for this day.</p></div></section>
+            <section class="track-card track-reflection-card"><div class="track-card-heading"><div><p class="track-label">A NOTE TO YOURSELF</p><h2>Daily Reflection</h2></div></div><p data-reflection class="track-reflection-copy"></p><p class="track-empty-inline" data-reflection-empty hidden>No reflection saved for this day.</p><div class="track-monthly-summary"><div><span>Average Progress</span><strong data-daily-month-average>—</strong><small data-daily-month-days>Across 0 saved days</small></div><div><span>Total Focus</span><strong data-daily-month-focus>—</strong><small>Selected month</small></div></div></section>
+        </div>
+        <section class="track-card track-day-goals"><div class="track-card-heading"><div><p class="track-label">GOALS SNAPSHOT</p><h2>Goals for this day</h2></div></div><div data-daily-goal-list></div><p class="track-empty-inline" data-daily-goals-empty hidden>No goal snapshot is available for this day.</p></section>
+    </section>
+
+    <section class="track-detail-view" data-track-view="monthly" hidden>
+        <div class="track-view-heading track-month-heading"><button class="track-back" type="button" data-back-overview><span aria-hidden="true">←</span> Back</button><h1><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M7.5 3.5v3M16.5 3.5v3M4 9h16"/></svg> Monthly Progress</h1></div>
+        <div class="track-date-picker track-month-picker" role="group" aria-label="Choose a month"><button type="button" class="track-arrow" data-month-step="-1" aria-label="Previous month">‹</button><strong data-month-label></strong><button type="button" class="track-arrow" data-month-step="1" aria-label="Next month">›</button></div>
+        <section class="track-card track-month-graph-card"><div class="track-chart-wrap track-month-chart-wrap"><svg class="track-chart track-monthly-chart" data-chart="monthly" viewBox="0 0 800 310" preserveAspectRatio="none" role="group" aria-label="Progress by day of the selected month"></svg><p class="track-chart-empty" data-chart-empty="monthly" hidden>No saved progress for this month.</p><div class="track-detail-panel track-month-tooltip" data-month-day-detail role="status" hidden></div></div></section>
+        <section class="track-card track-focus-month-card"><div class="track-card-heading"><div><p class="track-label">DAILY TOTALS</p><h2><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></svg> Daily Focus Time</h2></div></div><div class="track-chart-wrap track-bar-wrap"><svg class="track-bars" data-bars="monthly" viewBox="0 0 800 190" role="img" aria-label="Focus time by day of the selected month"></svg><p class="track-chart-empty" data-bars-empty="monthly" hidden>No focus sessions recorded this month.</p></div></section>
+        <section class="track-card track-summary-card"><div><p class="track-label">MONTHLY REFLECTION</p><h2>Progress, gathered over time.</h2></div><div class="track-monthly-summary"><div><span>Average Progress</span><strong data-month-average>—</strong><small data-month-days>Across 0 saved days</small></div><div><span>Total Focus</span><strong data-month-focus>—</strong><small>Selected month</small></div></div></section>
+    </section>
+
+    <section class="track-detail-view" data-track-view="yearly" hidden>
+        <div class="track-view-heading"><button class="track-back" type="button" data-back-overview><span aria-hidden="true">←</span> Back</button><h1>Yearly Progress</h1></div>
+        <div class="track-date-picker"><button type="button" class="track-arrow" data-year-step="-1" aria-label="Previous year">‹</button><strong class="track-year-value" data-year-value></strong><button type="button" class="track-arrow" data-year-step="1" aria-label="Next year">›</button></div>
+        <section class="track-card"><div class="track-card-heading"><div><p class="track-label">SAVED DAILY RECORDS</p><h2>Yearly Progress</h2></div></div><div class="track-year-layout"><div class="track-chart-wrap track-year-chart-wrap"><svg class="track-chart track-yearly-chart" data-chart="yearly" viewBox="0 0 800 310" preserveAspectRatio="none" role="group" aria-label="Progress by month for the selected year"></svg><p class="track-chart-empty" data-chart-empty="yearly" hidden>No saved progress for this year.</p></div><aside class="track-detail-panel track-year-detail" data-year-month-detail hidden></aside></div></section>
+        <section class="track-card"><div class="track-card-heading"><div><p class="track-label">JANUARY — DECEMBER</p><h2>Monthly Focus Time</h2></div></div><div class="track-chart-wrap track-bar-wrap"><svg class="track-bars" data-bars="yearly" viewBox="0 0 800 190" role="img" aria-label="Focus time by month for the selected year"></svg><p class="track-chart-empty" data-bars-empty="yearly" hidden>No focus sessions recorded this year.</p></div></section>
+        <section class="track-card track-summary-card"><div><p class="track-label">YOUR YEAR, IN FOCUS</p><h2>Yearly Summary</h2></div><div class="track-monthly-summary"><div><span>Average Progress</span><strong data-year-average>—</strong><small data-year-days>Across 0 saved days</small></div><div><span>Total Focus</span><strong data-year-focus>—</strong><small>Selected year</small></div></div></section>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}<script src="{{ url_for('static', filename='js/track.js') }}"></script>{% endblock %}

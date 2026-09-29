@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}FocusFlow{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- FocusFlow CSS -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    {% block head %}{% endblock %}
+
+</head>
+
+
+<body class="{% if request.endpoint == 'home' %}home-body{% endif %}{% block body_class %}{% endblock %}">
+
+    <!-- =========================================================
+         DESKTOP SIDEBAR
+         ========================================================= -->
+
+    <nav class="sidebar">
+
+        <!-- Logo -->
+        <div class="sidebar-logo">
+            <span>FocusFlow</span>
+        </div>
+
+
+        <!-- Profile -->
+        <div class="sidebar-profile">
+
+            <div class="profile-avatar">
+                {{ (current_user.name or current_user.email or 'F')[0]|upper }}
+            </div>
+
+            <div class="profile-information">
+
+                <p class="profile-name">
+                    {{ current_user.name if current_user and current_user.name else 'FocusFlow' }}
+                </p>
+
+                <p class="profile-stats">
+                    {{ current_user.email if current_user else '' }}
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Main Navigation -->
+        <ul class="sidebar-navigation">
+
+            <!-- Home -->
+            <li>
+                <a
+                    href="{{ url_for('home') }}"
+                    class="sidebar-link {% if request.endpoint == 'home' %}active{% endif %}"
+                >
+                    <span class="material-symbols-outlined">
+                        home
+                    </span>
+
+                    <span>Home</span>
+                </a>
+            </li>
+
+
+            <!-- Goals -->
+            <li>
+                <a
+                    href="{{ url_for('goals') }}"
+                    class="sidebar-link {% if request.endpoint == 'goals' %}active{% endif %}"
+                >
+                    <span class="material-symbols-outlined">
+                        target
+                    </span>
+
+                    <span>Goals</span>
+                </a>
+            </li>
+
+
+            <!-- Focus -->
+            <li>
+                <a
+                    href="{{ url_for('focus') }}"
+                    class="sidebar-link {% if request.endpoint == 'focus' %}active{% endif %}"
+                >
+                    <span class="material-symbols-outlined">
+                        timer
+                    </span>
+
+                    <span>Focus</span>
+                </a>
+            </li>
+
+
+            <!-- Track -->
+            <li>
+                <a
+                    href="{{ url_for('track') }}"
+                    class="sidebar-link {% if request.endpoint == 'track' %}active{% endif %}"
+                >
+                    <span class="material-symbols-outlined">
+                        insert_chart
+                    </span>
+
+                    <span>Track</span>
+                </a>
+            </li>
+
+
+            <!-- Achievements -->
+            <li>
+                <a
+                    href="{{ url_for('achievements') }}"
+                    class="sidebar-link {% if request.endpoint == 'achievements' %}active{% endif %}"
+                >
+                    <span class="material-symbols-outlined">
+                        emoji_events
+                    </span>
+
+                    <span>Achievements</span>
+                </a>
+            </li>
+
+        </ul>
+
+
+        <!-- Bottom Sidebar -->
+        <div class="sidebar-bottom">
+
+            <!-- Settings -->
+            <a
+                href="{{ url_for('settings') }}"
+                class="sidebar-link {% if request.endpoint == 'settings' %}active{% endif %}"
+            >
+                <span class="material-symbols-outlined">
+                    settings
+                </span>
+
+                <span>Settings</span>
+            </a>
+
+
+            <!-- Support -->
+            <a
+                href="{{ url_for('support') }}"
+                class="sidebar-link {% if request.endpoint == 'support' %}active{% endif %}"
+            >
+                <span class="material-symbols-outlined">
+                    help
+                </span>
+
+                <span>Support</span>
+            </a>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- =========================================================
+         DESKTOP TOP BAR
+         ========================================================= -->
+
+    <header class="desktop-topbar">
+
+        <div class="topbar-logo">
+            FocusFlow
+        </div>
+
+
+        <div class="topbar-actions">
+
+            <!-- New Session -->
+            <a
+                class="new-session-button"
+                href="{{ url_for('focus') }}"
+            >
+                New Session
+            </a>
+
+
+            <!-- Avatar -->
+            <div class="topbar-avatar" aria-label="{{ current_user.name or current_user.email }}">
+                {{ (current_user.name or current_user.email or 'F')[0]|upper }}
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+         ========================================================= -->
+
+    <main class="main-content">
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+
+
+    <!-- =========================================================
+         MOBILE BOTTOM NAVIGATION
+         ========================================================= -->
+
+    <nav class="mobile-bottom-nav">
+
+        <!-- Home -->
+        <a
+            href="{{ url_for('home') }}"
+            class="mobile-nav-item {% if request.endpoint == 'home' %}active{% endif %}"
+        >
+            <div class="mobile-nav-icon">
+                <span class="material-symbols-outlined">
+                    home
+                </span>
+            </div>
+
+            <span>Home</span>
+        </a>
+
+
+        <!-- Goals -->
+        <a
+            href="{{ url_for('goals') }}"
+            class="mobile-nav-item {% if request.endpoint == 'goals' %}active{% endif %}"
+        >
+            <div class="mobile-nav-icon">
+                <span class="material-symbols-outlined">
+                    target
+                </span>
+            </div>
+
+            <span>Goals</span>
+        </a>
+
+
+        <!-- Focus -->
+        <a
+            href="{{ url_for('focus') }}"
+            class="mobile-nav-item {% if request.endpoint == 'focus' %}active{% endif %}"
+        >
+            <div class="mobile-nav-icon">
+                <span class="material-symbols-outlined">
+                    timer
+                </span>
+            </div>
+
+            <span>Focus</span>
+        </a>
+
+
+        <!-- Track -->
+        <a
+            href="{{ url_for('track') }}"
+            class="mobile-nav-item {% if request.endpoint == 'track' %}active{% endif %}"
+        >
+            <div class="mobile-nav-icon">
+                <span class="material-symbols-outlined">
+                    insert_chart
+                </span>
+            </div>
+
+            <span>Track</span>
+        </a>
+
+
+        <!-- Achievements -->
+        <a
+            href="{{ url_for('achievements') }}"
+            class="mobile-nav-item {% if request.endpoint == 'achievements' %}active{% endif %}"
+        >
+            <div class="mobile-nav-icon">
+                <span class="material-symbols-outlined">
+                    emoji_events
+                </span>
+            </div>
+
+            <span>Achievements</span>
+        </a>
+
+    </nav>
+
+
+    <script>
+        window.FOCUSFLOW_DATA = {{ persisted_data | tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='js/storage.js') }}"></script>
+
+    <script>
+    </script>
+
+
+    {% block scripts %}
+    {% endblock %}
+
+</body>
+
+</html>

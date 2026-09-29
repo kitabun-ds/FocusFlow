@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Settings — FocusFlow{% endblock %}
+{% block body_class %}settings-body{% endblock %}
+
+{% block content %}
+<main class="settings-page">
+
+    <header class="settings-header">
+        <div>
+            <p class="goals-eyebrow">YOUR ACCOUNT</p>
+            <h1>Settings</h1>
+            <p class="goals-date">Manage your account and preferences.</p>
+        </div>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="settings-messages" aria-live="polite">
+                {% for category, message in messages %}
+                    <p class="settings-message settings-message-{{ category }}">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <section class="settings-section vellum-card">
+        <div class="settings-section-heading">
+            <p class="section-label">ACCOUNT</p>
+            <h2>Profile information</h2>
+        </div>
+        <dl class="settings-account-grid">
+            <div>
+                <dt>Name</dt>
+                <dd>{{ user.name or 'Not set' }}</dd>
+            </div>
+            <div>
+                <dt>Email</dt>
+                <dd>{{ user.email }}</dd>
+            </div>
+        </dl>
+    </section>
+
+    <section class="settings-section vellum-card">
+        <div class="settings-section-heading">
+            <p class="section-label">SECURITY</p>
+            <h2>Change password</h2>
+            <p class="section-subtitle">Choose a new password for your FocusFlow account.</p>
+        </div>
+        <form class="settings-password-form" method="POST" action="{{ url_for('update_account_password') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <div class="settings-field">
+                <label for="settings-password">New Password</label>
+                <input id="settings-password" name="password" type="password" minlength="6" autocomplete="new-password" required>
+            </div>
+            <div class="settings-field">
+                <label for="settings-confirm-password">Confirm Password</label>
+                <input id="settings-confirm-password" name="confirm_password" type="password" minlength="6" autocomplete="new-password" required>
+            </div>
+            <button type="submit" class="primary-action-button">Update Password</button>
+        </form>
+    </section>
+
+    <section class="settings-section vellum-card">
+        <div class="settings-section-heading">
+            <p class="section-label">PREFERENCES</p>
+            <h2>Goal reminders</h2>
+            <p class="section-subtitle">Reminder times and notification permission are managed with your goals.</p>
+        </div>
+        <a class="settings-inline-link" href="{{ url_for('goals') }}">
+            Manage goal reminders
+            <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+        </a>
+    </section>
+
+    <section class="settings-section vellum-card">
+        <div class="settings-section-heading">
+            <p class="section-label">SESSION</p>
+            <h2>Log out</h2>
+            <p class="section-subtitle">End your current FocusFlow session on this device.</p>
+        </div>
+        <form method="POST" action="{{ url_for('logout') }}">
+            <button type="submit" class="primary-action-button">Log Out</button>
+        </form>
+    </section>
+
+    <section class="settings-danger-zone">
+        <div class="settings-danger-copy">
+            <p class="section-label">PRIVACY &amp; ACCOUNT</p>
+            <h2>Delete Account</h2>
+            <p>Permanently remove your FocusFlow account and its associated goal data. This cannot be undone.</p>
+        </div>
+        <details class="settings-delete-details">
+            <summary class="settings-delete-trigger">Delete Account</summary>
+            <div class="settings-delete-confirmation">
+                <p>Account deletion is permanent. Your account and saved FocusFlow data will be deleted.</p>
+                <form method="POST" action="{{ url_for('delete_account') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <label class="settings-field" for="delete-confirmation">
+                        Type DELETE to confirm
+                        <input id="delete-confirmation" name="confirmation" type="text" autocomplete="off" required>
+                    </label>
+                    <button type="submit" class="settings-delete-submit">Permanently Delete Account</button>
+                </form>
+            </div>
+        </details>
+    </section>
+
+</main>
+{% endblock %}

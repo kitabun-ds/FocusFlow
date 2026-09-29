@@ -1,0 +1,579 @@
+{% extends "base.html" %}
+
+{% block title %}Goals — FocusFlow{% endblock %}
+{% block body_class %}goals-body{% endblock %}
+
+{% block content %}
+
+<div class="goals-page">
+
+    <!-- =====================================================
+         PAGE HEADER
+         ===================================================== -->
+
+    <section class="goals-header">
+
+        <div>
+            <p class="goals-eyebrow">GOALS</p>
+
+            <h1>Turn intention into measurable progress.</h1>
+
+            <p class="goals-intro-copy">
+                Set clear targets, track your effort, and move forward one step at a time.
+            </p>
+
+            <p class="goals-date" id="goalsDate">
+                Today
+            </p>
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         MONTHLY MAIN GOAL
+         ===================================================== -->
+
+    <section class="vellum-card monthly-goal-card">
+
+        <div class="section-heading-row">
+
+            <div>
+                <p class="section-label">MONTHLY MAIN GOAL</p>
+
+                <h2 id="monthlyGoalTitle">
+                    No monthly goal yet
+                </h2>
+
+                <p
+                    id="monthlyGoalDescription"
+                    class="monthly-goal-description"
+                >
+                    Add one meaningful goal to guide your month.
+                </p>
+            </div>
+
+            <button
+                type="button"
+                class="text-action-button"
+                id="editMonthlyGoalButton"
+            >
+                + Add Monthly Goal
+            </button>
+
+        </div>
+
+
+        <div
+            class="monthly-goal-editor"
+            id="monthlyGoalEditor"
+            hidden
+        >
+
+            <input
+                type="text"
+                id="monthlyGoalInput"
+                class="goal-form-input"
+                placeholder="e.g. Become a Quant Researcher"
+                maxlength="100"
+            >
+
+            <textarea
+                id="monthlyGoalDescriptionInput"
+                class="goal-form-input goal-form-textarea"
+                placeholder="What do you want to achieve this month?"
+                rows="2"
+                maxlength="250"
+            ></textarea>
+
+            <div class="monthly-editor-actions">
+
+                <button
+                    type="button"
+                    class="secondary-action-button"
+                    id="cancelMonthlyGoalButton"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="button"
+                    class="primary-action-button"
+                    id="saveMonthlyGoalButton"
+                >
+                    Save Goal
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="monthly-goal-meta"
+            id="monthlyGoalMeta"
+            hidden
+        >
+            <span id="monthlyGoalTimeframe"></span>
+            <span id="monthlyGoalDay"></span>
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         TODAY'S GOALS
+         ===================================================== -->
+
+    <section class="goals-section">
+
+        <div class="section-heading-row">
+
+            <div>
+                <p class="section-label">TODAY</p>
+
+                <h2>Today's Goals</h2>
+
+                <p class="section-subtitle">
+                    Add only the goals you actually want to work on today.
+                </p>
+                <p class="reminder-page-status" id="reminderPageStatus" role="status" aria-live="polite" hidden></p>
+            </div>
+
+            <div class="goals-heading-actions">
+                <button
+                    type="button"
+                    class="goals-add-reminder-button"
+                    id="openReminderButton"
+                >
+                    <span class="material-symbols-outlined">notifications</span>
+                    Add Reminder
+                </button>
+
+                <button
+                    type="button"
+                    class="primary-action-button"
+                    id="addGoalButton"
+                >
+                    <span class="material-symbols-outlined">add</span>
+                    Add Goal
+                </button>
+            </div>
+
+        </div>
+
+
+        <div class="vellum-card goals-table-card">
+
+            <!-- Table header -->
+
+            <div class="goals-table-header">
+
+                <div>Goal</div>
+                <div>Unit</div>
+                <div>Target</div>
+                <div>Reminder</div>
+                <div>Time Invested</div>
+                <div>Progress</div>
+                <div></div>
+
+            </div>
+
+
+            <!-- Dynamic goals -->
+
+            <div id="goalsList">
+
+                <div
+                    class="goals-empty-state"
+                    id="goalsEmptyState"
+                >
+
+                    <span class="material-symbols-outlined">
+                        flag
+                    </span>
+
+                    <h3>No goals added yet</h3>
+
+                    <p>
+                        Your goals will appear here after you add them.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="text-action-button"
+                        id="emptyAddGoalButton"
+                    >
+                        + Add your first goal
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         OVERALL PROGRESS
+         ===================================================== -->
+
+    <div class="goals-summary-grid">
+
+    <section class="vellum-card overall-progress-card">
+
+        <div class="section-heading-row">
+
+            <div>
+                <p class="section-label">TODAY'S PROGRESS</p>
+
+                <h2 id="overallProgressTitle">
+                    0% done
+                </h2>
+
+                <p
+                    class="section-subtitle"
+                    id="overallProgressMessage"
+                >
+                    No goals yet. Add a goal to start tracking your progress.
+                </p>
+            </div>
+
+            <div class="overall-progress-number">
+                <span class="overall-progress-caption">Overall Progress</span>
+                <span><span id="overallProgressValue">0</span>%</span>
+            </div>
+
+        </div>
+
+
+        <div class="progress-track">
+
+            <div
+                class="progress-fill"
+                id="overallProgressBar"
+                style="width: 0%;"
+            ></div>
+
+        </div>
+
+
+        <div class="overall-stats">
+
+            <div>
+                <span class="stat-label">Goals</span>
+                <strong id="totalGoalsStat">0</strong>
+            </div>
+
+            <div>
+                <span class="stat-label">Completed</span>
+                <strong id="completedGoalsStat">0</strong>
+            </div>
+
+            <div>
+                <span class="stat-label">Remaining</span>
+                <strong id="remainingGoalsStat">0</strong>
+            </div>
+
+            <div>
+                <span class="stat-label">Total Focus Time</span>
+                <strong id="totalFocusTime">0m</strong>
+            </div>
+
+        </div>
+
+        <div class="progress-detail-stats">
+            <div id="streakMetric" hidden>
+                <span class="stat-label">Streak</span>
+                <strong><span id="currentStreakStat">0</span> Days</strong>
+            </div>
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         REFLECTION
+         ===================================================== -->
+
+    <section class="vellum-card reflection-card">
+
+        <div class="section-heading-row">
+
+            <div>
+                <p class="section-label">REFLECTION</p>
+
+                <h2>How did today go?</h2>
+            </div>
+
+            <span class="autosave-note">
+                Saved to your account
+            </span>
+
+        </div>
+
+
+        <textarea
+            id="reflectionInput"
+            class="reflection-textarea"
+            placeholder="Write a few thoughts about your day..."
+            rows="5"
+        ></textarea>
+
+        <div class="reflection-footer">
+
+            <span>
+                Your reflection syncs with your account.
+            </span>
+
+            <button
+                type="button"
+                class="text-action-button"
+            >
+                Open in Full Journal Canvas →
+            </button>
+
+        </div>
+
+    </section>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         REMINDER TOAST
+         ===================================================== -->
+
+    <div
+        class="reminder-toast"
+        id="reminderToast"
+        hidden
+    >
+
+        <div class="reminder-toast-icon">
+            <span class="material-symbols-outlined">
+                notifications_active
+            </span>
+        </div>
+
+        <div class="reminder-toast-content">
+
+            <p class="reminder-toast-label">
+                TIME TO FOCUS
+            </p>
+
+            <h3 id="toastGoalName">
+                Goal Reminder
+            </h3>
+
+            <p id="toastGoalDetails">
+                Your scheduled goal is ready.
+            </p>
+
+        </div>
+
+        <div class="reminder-toast-actions">
+
+            <button
+                type="button"
+                id="toastStartButton"
+            >
+                Start Focus
+            </button>
+
+            <button
+                type="button"
+                id="toastSnoozeButton"
+            >
+                Snooze 10m
+            </button>
+
+            <button
+                type="button"
+                id="toastDismissButton"
+            >
+                Stop Alarm
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         REMINDER MODAL
+         ===================================================== -->
+
+    <div
+        class="modal-backdrop"
+        id="reminderModal"
+        hidden
+    >
+
+        <div
+            class="reminder-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="reminderModalTitle"
+        >
+
+            <div class="modal-header">
+
+                <div>
+                    <p class="section-label">REMINDER</p>
+
+                    <h2 id="reminderModalTitle">
+                        Set a Reminder
+                    </h2>
+                </div>
+
+                <button
+                    type="button"
+                    class="modal-close-button"
+                    id="closeReminderButton"
+                    aria-label="Close"
+                >
+                    <span class="material-symbols-outlined">
+                        close
+                    </span>
+                </button>
+
+            </div>
+
+
+            <div class="reminder-form">
+
+                <label for="reminderGoalSelect">
+                    Goal
+                </label>
+
+                <select
+                    id="reminderGoalSelect"
+                    class="goal-form-input"
+                >
+                </select>
+
+
+                <label for="reminderTimeInput">
+                    Reminder time
+                </label>
+
+                <p class="reminder-time-help" id="reminderTimeHelp">Choose a time for this goal reminder.</p>
+
+                <input
+                    type="time"
+                    id="reminderTimeInput"
+                    class="goal-form-input"
+                    aria-describedby="reminderTimeHelp"
+                >
+
+
+                <label class="toggle-row">
+
+                    <span>
+                        Enable reminder
+                    </span>
+
+                    <input
+                        type="checkbox"
+                        id="reminderEnabled"
+                        checked
+                    >
+
+                </label>
+
+
+                <label>
+                    Repeat
+                </label>
+
+                <div class="frequency-options">
+
+                    <button
+                        type="button"
+                        class="frequency-button active"
+                        data-frequency="once"
+                    >
+                        Once
+                    </button>
+
+                    <button
+                        type="button"
+                        class="frequency-button"
+                        data-frequency="daily"
+                    >
+                        Daily
+                    </button>
+
+                    <button
+                        type="button"
+                        class="frequency-button"
+                        data-frequency="weekdays"
+                    >
+                        Weekdays
+                    </button>
+
+                </div>
+
+                <p class="reminder-delivery-note" id="reminderDeliveryNote">
+                    Browser notifications need permission. In-app alerts run while FocusFlow is open; reminders cannot fire after the browser is closed.
+                </p>
+
+                <p class="reminder-permission-status" id="reminderPermissionStatus" role="status" aria-live="polite"></p>
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-action-button"
+                    id="deleteReminderButton"
+                    hidden
+                >
+                    Delete Reminder
+                </button>
+
+                <button
+                    type="button"
+                    class="secondary-action-button"
+                    id="cancelReminderButton"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="button"
+                    class="primary-action-button"
+                    id="setReminderButton"
+                >
+                    Set Reminder
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+<script
+    src="{{ url_for('static', filename='js/goals.js') }}"
+></script>
+
+{% endblock %}

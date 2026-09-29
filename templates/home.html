@@ -1,0 +1,320 @@
+{% extends "base.html" %}
+
+{% block title %}
+FocusFlow - Home
+{% endblock %}
+
+{% block content %}
+
+<div class="home-container">
+
+    <!-- ===================================================== -->
+    <!-- GREETING -->
+    <!-- ===================================================== -->
+
+    <section class="greeting-section fade-up">
+
+        <p class="eyebrow">
+            YOUR FOCUSFLOW
+        </p>
+
+        <h1>
+            <span id="home-greeting-time">Good Morning</span>, {{ user.name or 'there' }}
+        </h1>
+
+        <p class="date-text" id="current-date">
+            Loading date...
+        </p>
+
+    </section>
+
+
+
+    <!-- ===================================================== -->
+    <!-- MAIN DASHBOARD -->
+    <!-- ===================================================== -->
+
+    <section class="dashboard-grid">
+
+
+        <!-- ================================================= -->
+        <!-- TODAY'S PROGRESS -->
+        <!-- ================================================= -->
+
+        <div class="progress-card dashboard-card fade-up delay-100">
+
+            <div class="card-heading">
+
+                <h2>
+                    Today's Progress
+                </h2>
+
+                <span class="material-symbols-outlined heading-icon">
+                    insights
+                </span>
+
+            </div>
+
+
+            <div class="progress-main">
+
+                <div class="progress-circle">
+
+                    <svg viewBox="0 0 100 100">
+
+                        <circle
+                            cx="50"
+                            cy="50"
+                            r="43"
+                            class="progress-track">
+                        </circle>
+
+
+                        <circle
+                            cx="50"
+                            cy="50"
+                            r="43"
+                            class="progress-value"
+                            id="progress-circle">
+                        </circle>
+
+                    </svg>
+
+
+                    <div class="progress-number">
+
+                        <span id="progress-number">
+                            0
+                        </span>
+
+                        <small>%</small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Goal progress counts -->
+
+            <div class="progress-stats">
+
+                <div class="stat-box">
+
+                    <span class="material-symbols-outlined">
+                        flag
+                    </span>
+
+                    <p>
+                        Goals
+                    </p>
+
+                    <strong id="home-goal-count">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-box">
+
+                    <span class="material-symbols-outlined">
+                        task_alt
+                    </span>
+
+                    <p>
+                        Completed
+                    </p>
+
+                    <strong id="home-completed-count">
+                        0
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- TODAY'S GOALS -->
+        <!-- ================================================= -->
+
+        <div class="goals-card dashboard-card fade-up delay-200">
+
+            <div class="card-heading">
+
+                <h2>
+                    Today's Goals
+                </h2>
+
+                <span class="material-symbols-outlined heading-icon">
+                    task_alt
+                </span>
+
+            </div>
+
+
+            <!-- REAL GOALS ARE INSERTED HERE -->
+
+            <div
+                class="goal-list"
+                id="home-goal-list"
+            >
+
+                <!-- JavaScript populates this -->
+
+            </div>
+
+
+            <div
+                class="home-empty-goals"
+                id="home-empty-goals"
+                style="display: none;"
+            >
+
+                <p>
+                    No goals yet
+                </p>
+
+                <span>
+                    Add your first goal to start tracking your progress.
+                </span>
+
+            </div>
+
+
+            <div class="view-all-container">
+
+                <a
+                    href="{{ url_for('goals') }}"
+                    class="view-all-button"
+                >
+
+                    View All Goals
+
+                    <span class="material-symbols-outlined">
+                        arrow_forward
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- START FOCUS -->
+        <!-- ================================================= -->
+
+        <a
+            class="start-focus-card fade-up delay-300"
+            href="{{ url_for('focus') }}"
+            aria-label="Start a focus session"
+        >
+
+            <div class="start-focus-glow"></div>
+
+            <span class="material-symbols-outlined start-focus-icon">
+                play_arrow
+            </span>
+
+            <span class="start-focus-title">
+                Start Focus
+            </span>
+
+            <span class="start-focus-subtitle">
+                Begin a focused session
+            </span>
+
+        </a>
+
+
+
+        <!-- ================================================= -->
+        <!-- FULL FOCUSFLOW INSIGHT -->
+        <!-- ================================================= -->
+
+        <div class="insight-card fade-up delay-400">
+
+            <div class="insight-decoration">
+
+                <span class="material-symbols-outlined">
+                    waves
+                </span>
+
+            </div>
+
+
+            <div class="insight-content">
+
+                <div class="insight-label">
+
+                    <span class="material-symbols-outlined">
+                        lightbulb
+                    </span>
+
+                    <span>
+                        YOUR PROGRESS
+                    </span>
+
+                </div>
+
+
+                <h2 id="insight-title">
+                    Start with one goal.
+                </h2>
+
+
+                <p
+                    class="insight-description"
+                    id="insight-description"
+                >
+                    Add a goal and begin making measurable progress.
+                </p>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================== -->
+    <!-- CLOSING QUOTE -->
+    <!-- ===================================================== -->
+
+    <section class="closing-quote fade-up delay-400">
+
+        <span class="quote-mark">
+            “
+        </span>
+
+        <p>
+            Small progress, repeated consistently, becomes something remarkable.
+        </p>
+
+        <span class="quote-line"></span>
+
+    </section>
+
+
+</div>
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
+
+{% endblock %}

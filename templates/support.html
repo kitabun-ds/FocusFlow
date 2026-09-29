@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Support — FocusFlow{% endblock %}
+{% block body_class %}support-body{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/support.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="support-page">
+    <section class="support-content" aria-labelledby="support-title">
+        <header class="support-heading">
+            <p class="support-eyebrow">WE'RE HERE TO HELP</p>
+            <h1 id="support-title">Support</h1>
+            <p>Tell us what's on your mind and we'll get back to you.</p>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="support-alerts" aria-live="polite">
+                    {% for category, message in messages %}
+                        <p class="support-alert support-alert-{{ category }}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% if form_error %}
+            <p class="support-alert support-alert-error" role="alert">{{ form_error }}</p>
+        {% endif %}
+
+        <form class="support-form" method="POST" action="{{ url_for('support') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            <div class="support-field">
+                <label for="support-subject">Subject <span>(optional)</span></label>
+                <input
+                    id="support-subject"
+                    name="subject"
+                    type="text"
+                    maxlength="200"
+                    autocomplete="off"
+                    placeholder="What can we help with?"
+                    value="{{ subject }}"
+                >
+            </div>
+
+            <div class="support-field">
+                <label for="support-message">Message</label>
+                <textarea
+                    id="support-message"
+                    name="message"
+                    rows="7"
+                    maxlength="10000"
+                    required
+                    aria-describedby="support-message-hint"
+                    placeholder="Describe your question, feedback, or issue..."
+                >{{ message }}</textarea>
+                <p id="support-message-hint" class="support-hint">Please include any details that will help us understand your request.</p>
+            </div>
+
+            <button class="support-send-button" type="submit">
+                <span class="material-symbols-outlined" aria-hidden="true">send</span>
+                <span class="support-send-label">Send</span>
+            </button>
+        </form>
+    </section>
+</main>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/support.js') }}"></script>
+{% endblock %}

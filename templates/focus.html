@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Focus — FocusFlow{% endblock %}
+{% block body_class %}focus-body{% endblock %}
+
+{% block content %}
+<div class="focus-page" id="focusPage" data-state="landing">
+    <section class="focus-stage focus-landing" data-screen="landing">
+        <div class="focus-landing-message">
+            <p class="focus-eyebrow">A MOMENT FOR WHAT MATTERS</p>
+            <h1>Ready to Focus?</h1>
+            <p class="focus-copy">Stay focused. Make progress.</p>
+            <button class="focus-primary" type="button" data-action="choose-goal">▶ START FOCUS</button>
+        </div>
+    </section>
+
+    <section class="focus-stage" data-screen="goal" hidden>
+        <header class="focus-screen-header"><button class="focus-back" type="button" data-action="back-landing" aria-label="Back">←</button><span>Select Goal</span></header>
+        <p class="focus-eyebrow">CHOOSE YOUR INTENTION</p>
+        <h1>What are you focusing on?</h1>
+        <p class="focus-copy">Choose a goal to stay on track.</p>
+        <div class="focus-goal-list" id="focusGoalList" role="list"></div>
+        <div class="focus-empty" id="focusNoGoals" hidden><h2>Your next goal starts in Goals</h2><p>Add a goal there, then come back to give it your attention.</p><a class="focus-secondary" href="{{ url_for('goals') }}">Go to Goals</a></div>
+        <button class="focus-primary" id="focusGoalContinue" type="button" data-action="continue-mode" disabled>Continue</button>
+    </section>
+
+    <section class="focus-stage" data-screen="mode" hidden>
+        <header class="focus-screen-header"><button class="focus-back" type="button" data-action="back-goal" aria-label="Back">←</button><span>Focus</span></header>
+        <div class="focus-goal-summary" data-goal-summary></div>
+        <p class="focus-eyebrow">A SESSION THAT FITS</p>
+        <h1>How do you want to focus?</h1>
+        <p class="focus-copy">Choose a rhythm for the time you set.</p>
+        <div class="focus-mode-list">
+            <button class="focus-mode" type="button" data-action="prepare-pomodoro"><span class="focus-mode-mark" aria-hidden="true">◷</span><span><strong>Pomodoro</strong><small>25 min work · 5 min break</small><small>Focused sessions with regular pauses.</small></span><span class="focus-mode-arrow" aria-hidden="true">›</span></button>
+            <button class="focus-mode" type="button" data-action="prepare-deep"><span class="focus-mode-mark" aria-hidden="true">◎</span><span><strong>Deep Work</strong><small>Uninterrupted focus</small><small>For longer, distraction-free work.</small></span><span class="focus-mode-arrow" aria-hidden="true">›</span></button>
+        </div>
+    </section>
+
+    <section class="focus-stage focus-timer-stage" data-screen="pomodoro-ready" hidden>
+        <header class="focus-screen-header"><button class="focus-back" type="button" data-action="back-mode" aria-label="Back">←</button><span>Pomodoro</span></header>
+        <div class="focus-goal-summary" data-goal-summary></div>
+        <p class="focus-eyebrow">YOUR FOCUS SESSION</p><h1>Pomodoro</h1>
+        <p class="focus-copy">25 min work · 5 min break</p>
+        <label class="focus-duration-label">Total focus time</label>
+        <div class="focus-duration-control"><input data-duration-input type="number" min="1" max="1440" step="0.01" inputmode="decimal" aria-label="Total focus time in minutes"><span>minutes</span></div>
+        <p class="focus-duration-note" data-duration-note></p>
+        <div class="focus-clock" data-timer="work" aria-label="Work interval">25:00</div>
+        <p class="focus-copy focus-timer-caption">Work interval · final interval adjusts to your total.</p>
+        <button class="focus-primary" type="button" data-action="start-work">▶ START FOCUS</button>
+    </section>
+
+    <section class="focus-stage focus-timer-stage" data-screen="pomodoro-running" hidden>
+        <header class="focus-screen-header"><button class="focus-back" type="button" data-action="active-back" aria-label="End session and go back">←</button><span>Pomodoro</span><span></span></header><div class="focus-goal-summary" data-goal-summary></div>
+        <p class="focus-eyebrow">FOCUS SESSION</p><div class="focus-clock" data-timer="work" aria-live="off">25:00</div><p class="focus-copy">Stay with the task in front of you.</p>
+        <div class="focus-controls"><button class="focus-primary" type="button" data-action="toggle-work">Ⅱ Pause</button><button class="focus-quiet-button" type="button" data-action="end-work">■ End</button></div>
+    </section>
+
+    <section class="focus-stage focus-timer-stage" data-screen="break" hidden>
+        <header class="focus-screen-header"><button class="focus-back" type="button" data-action="active-back" aria-label="End session and go back">←</button><span>Pomodoro</span><span></span></header><p class="focus-eyebrow">A PAUSE, WELL EARNED</p><h1>Break</h1><div class="focus-clock" data-timer="break">05:00</div><p class="focus-copy">Take a moment. Breathe.</p>
+    </section>
+
+    <section class="focus-stage focus-timer-stage" data-screen="deep-ready" hidden>
+        <header class="focus-screen-header"><button class="focus-back" type="button" data-action="back-mode" aria-label="Back">←</button><span>Deep Work</span></header><div class="focus-goal-summary" data-goal-summary></div>
+        <p class="focus-eyebrow">YOUR FOCUS SESSION</p><h1>Deep Work</h1><p class="focus-copy">Uninterrupted focus, at your pace.</p>
+        <label class="focus-duration-label">Total focus time</label><div class="focus-duration-control"><input data-duration-input type="number" min="1" max="1440" step="0.01" inputmode="decimal" aria-label="Total focus time in minutes"><span>minutes</span></div><p class="focus-duration-note" data-duration-note></p>
+        <div class="focus-clock" data-timer="work" aria-label="Total focus time">01:00:00</div><button class="focus-primary" type="button" data-action="start-work">▶ START FOCUS</button>
+    </section>
+
+    <section class="focus-stage focus-timer-stage" data-screen="deep-running" hidden>
+        <header class="focus-screen-header"><button class="focus-back" type="button" data-action="active-back" aria-label="End session and go back">←</button><span>Deep Work</span><span></span></header><div class="focus-goal-summary" data-goal-summary></div>
+        <p class="focus-eyebrow">FOCUS SESSION</p><div class="focus-clock" data-timer="work" aria-live="off">01:00:00</div><p class="focus-copy">Stay with the task in front of you.</p>
+        <div class="focus-controls"><button class="focus-primary" type="button" data-action="toggle-work">Ⅱ Pause</button><button class="focus-quiet-button" type="button" data-action="end-work">■ End</button></div>
+    </section>
+
+    <section class="focus-stage" data-screen="completed" hidden><p class="focus-eyebrow">SESSION COMPLETE</p><h1 class="focus-completion-title"><span id="focusCompletedDuration">00:00</span><small>FOCUSED</small></h1><p class="focus-copy">You gave your attention to what matters.</p><dl class="focus-recap"><div><dt>Completed goal</dt><dd id="focusCompletedGoal">-</dd></div><div><dt>Today's focus</dt><dd id="focusTodayProgress">0 minutes</dd></div></dl><button class="focus-primary" type="button" data-action="continue">Continue</button></section>
+
+    <section class="focus-stage" data-screen="continue" hidden><p class="focus-eyebrow">CARRY IT WITH YOU</p><blockquote class="focus-quote" id="focusQuote"></blockquote><p class="focus-copy" id="focusContinueSummary"></p><button class="focus-primary" type="button" data-action="another-session">Start Another Session</button><a class="focus-secondary" href="{{ url_for('home') }}">Back to Home</a></section>
+</div>
+{% endblock %}
+
+{% block scripts %}<script src="{{ url_for('static', filename='js/focus.js') }}"></script>{% endblock %}
