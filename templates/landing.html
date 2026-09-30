@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -11,7 +12,10 @@
 
     <title>FocusFlow — Track. Focus. Grow.</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
 
     <link
         rel="preconnect"
@@ -71,7 +75,6 @@
             position: absolute;
             inset: 0;
             z-index: -2;
-
             background:
                 linear-gradient(
                     180deg,
@@ -87,10 +90,8 @@
             height: 55vh;
             left: 50%;
             top: 40%;
-
             transform:
                 translate(-50%, -50%);
-
             background:
                 radial-gradient(
                     ellipse,
@@ -98,7 +99,6 @@
                     rgba(255, 255, 255, 0.04) 45%,
                     transparent 75%
                 );
-
             filter: blur(25px);
             pointer-events: none;
             z-index: -1;
@@ -107,22 +107,17 @@
         .intro-stage {
             position: absolute;
             inset: 0;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             padding: 70px 30px 150px;
-
             text-align: center;
         }
 
         .intro-content {
             position: relative;
-
             width: min(1100px, 92vw);
             height: 100%;
-
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -131,20 +126,15 @@
 
         .quote {
             position: relative;
-
             display: flex;
             flex-direction: column;
             align-items: center;
-
             color: var(--white);
-
             text-shadow:
                 0 3px 20px rgba(0, 43, 65, 0.30),
                 0 1px 4px rgba(0, 43, 65, 0.22);
-
             opacity: 1;
             transform: translateY(0);
-
             transition:
                 opacity 0.65s ease,
                 transform 0.65s cubic-bezier(.22, .75, .2, 1);
@@ -154,7 +144,6 @@
             font-family:
                 "Cormorant Garamond",
                 serif;
-
             font-weight: 500;
             line-height: 1.02;
             letter-spacing: -0.018em;
@@ -163,34 +152,27 @@
         .quote-line.first {
             font-size:
                 clamp(52px, 6.5vw, 92px);
-
             opacity: 0;
             transform: translateY(22px);
-
             animation:
                 quoteFirstIn
                 1.05s
                 cubic-bezier(.22, .75, .2, 1)
                 forwards;
-
             animation-delay: 1s;
         }
 
         .quote-line.second {
             margin-top: 3px;
-
             font-size:
                 clamp(43px, 5.5vw, 78px);
-
             opacity: 0;
             transform: translateY(18px);
-
             animation:
                 quoteSecondIn
                 1.05s
                 cubic-bezier(.22, .75, .2, 1)
                 forwards;
-
             animation-delay: 1.85s;
         }
 
@@ -201,27 +183,21 @@
 
         .brand-reveal {
             position: absolute;
-
             left: 50%;
             top: 50%;
-
             transform:
                 translate(-50%, calc(-50% + 14px))
                 scale(0.985);
-
             display: flex;
             flex-direction: column;
             align-items: center;
-
             opacity: 0;
             pointer-events: none;
-
             animation:
                 focusReveal
                 0.65s
                 cubic-bezier(.22, .75, .2, 1)
                 forwards;
-
             animation-delay: 5s;
         }
 
@@ -229,132 +205,93 @@
             font-family:
                 "Cormorant Garamond",
                 serif;
-
             font-size:
                 clamp(60px, 8vw, 112px);
-
             font-weight: 600;
             line-height: 0.95;
-
             letter-spacing: 0.20em;
             text-indent: 0.20em;
-
             color: var(--white);
-
             white-space: nowrap;
-
             text-shadow:
                 0 4px 24px rgba(0, 45, 65, 0.32);
         }
 
         .focusflow-motto {
             margin-top: 6px;
-
             font-family:
                 "Inter",
                 sans-serif;
-
             font-size:
                 clamp(12px, 1.1vw, 15px);
-
             font-weight: 500;
             line-height: 1;
-
             letter-spacing: 0.42em;
             text-indent: 0.42em;
-
             color:
                 rgba(255, 255, 255, 0.95);
-
             white-space: nowrap;
-
             text-shadow:
                 0 2px 12px rgba(0, 45, 65, 0.25);
-
             opacity: 0;
             transform: translateY(5px);
-
             animation:
                 mottoReveal
                 0.55s
                 cubic-bezier(.22, .75, .2, 1)
                 forwards;
-
             animation-delay: 5.8s;
         }
 
         .cta-area {
             position: absolute;
-
             left: 50%;
-
             bottom:
                 clamp(65px, 9vh, 105px);
-
             transform:
                 translate(-50%, 12px);
-
             display: flex;
             flex-direction: column;
             align-items: center;
-
             z-index: 10;
-
             opacity: 0;
-
             animation:
                 ctaReveal
                 0.65s
                 cubic-bezier(.22, .75, .2, 1)
                 forwards;
-
             animation-delay: 6.35s;
         }
 
         .get-started {
             display: inline-flex;
-
             align-items: center;
             justify-content: center;
-
             min-width: 190px;
             height: 52px;
-
             padding: 0 30px;
-
             border:
                 1px solid
                 rgba(255, 255, 255, 0.65);
-
             border-radius: 999px;
-
             background:
                 rgba(0, 48, 70, 0.24);
-
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-
             color: white;
-
             font-family:
                 "Inter",
                 sans-serif;
-
             font-size: 13px;
             font-weight: 600;
-
             letter-spacing: 0.18em;
             text-transform: uppercase;
-
             text-decoration: none;
-
             box-shadow:
                 0 8px 30px
                 rgba(0, 48, 70, 0.12),
-
                 inset 0 1px 0
                 rgba(255, 255, 255, 0.35);
-
             transition:
                 transform 0.3s ease,
                 background 0.3s ease,
@@ -363,46 +300,35 @@
 
         .get-started:hover {
             transform: translateY(-3px);
-
             background:
                 rgba(255, 255, 255, 0.28);
-
             box-shadow:
                 0 14px 38px
                 rgba(0, 48, 70, 0.18),
-
                 inset 0 1px 0
                 rgba(255, 255, 255, 0.45);
         }
 
         .login-link {
             margin-top: 15px;
-
             color:
                 rgba(255, 255, 255, 0.92);
-
             font-family:
                 "Inter",
                 sans-serif;
-
             font-size: 12px;
             font-weight: 400;
-
             letter-spacing: 0.02em;
-
             text-decoration: none;
-
             text-shadow:
                 0 2px 10px
                 rgba(0, 42, 62, 0.28);
-
             transition:
                 opacity 0.25s ease;
         }
 
         .login-link span {
             font-weight: 600;
-
             text-decoration: underline;
             text-underline-offset: 4px;
         }
@@ -422,6 +348,7 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+
         }
 
         @keyframes quoteSecondIn {
@@ -435,13 +362,13 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+
         }
 
         @keyframes focusReveal {
 
             0% {
                 opacity: 0;
-
                 transform:
                     translate(
                         -50%,
@@ -452,11 +379,11 @@
 
             100% {
                 opacity: 1;
-
                 transform:
                     translate(-50%, -50%)
                     scale(1);
             }
+
         }
 
         @keyframes mottoReveal {
@@ -470,23 +397,23 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+
         }
 
         @keyframes ctaReveal {
 
             0% {
                 opacity: 0;
-
                 transform:
                     translate(-50%, 12px);
             }
 
             100% {
                 opacity: 1;
-
                 transform:
                     translate(-50%, 0);
             }
+
         }
 
         @media (max-width: 700px) {
@@ -503,24 +430,20 @@
 
             .quote-line.second {
                 margin-top: 7px;
-
                 font-size:
                     clamp(34px, 9vw, 52px);
-
                 max-width: 95vw;
             }
 
             .focusflow-title {
                 font-size:
                     clamp(48px, 14vw, 78px);
-
                 letter-spacing: 0.13em;
                 text-indent: 0.13em;
             }
 
             .focusflow-motto {
                 font-size: 10px;
-
                 letter-spacing: 0.27em;
                 text-indent: 0.27em;
             }
@@ -533,6 +456,7 @@
                 min-width: 175px;
                 height: 50px;
             }
+
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -542,16 +466,16 @@
             *::after {
                 animation-duration:
                     0.01ms !important;
-
                 animation-iteration-count:
                     1 !important;
-
                 transition-duration:
                     0.01ms !important;
             }
+
         }
 
     </style>
+
 </head>
 
 
@@ -565,16 +489,15 @@
     <video
         id="oceanVideo"
         class="ocean-video"
+        src="{{ url_for('static', filename='images/ocean-crystal.mp4') }}"
         autoplay
         muted
+        defaultMuted
+        loop
         playsinline
+        webkit-playsinline
         preload="auto"
-    >
-        <source
-            src="{{ url_for('static', filename='images/ocean-crystal.mp4') }}"
-            type="video/mp4"
-        >
-    </video>
+    ></video>
 
 
     <div class="light-overlay"></div>
@@ -590,6 +513,7 @@
                 class="quote"
                 id="introQuote"
             >
+
                 <div class="quote-line first">
                     Every journey
                 </div>
@@ -597,6 +521,7 @@
                 <div class="quote-line second">
                     begins with one small step.
                 </div>
+
             </div>
 
 
@@ -662,8 +587,30 @@
 
 
     /* =====================================
-       VIDEO
+       VIDEO AUTOPLAY
     ===================================== */
+
+    function prepareVideo() {
+
+        if (!video) {
+            return;
+        }
+
+        /*
+         * Force the video into a muted,
+         * inline-playback state before loading.
+         */
+        video.muted = true;
+        video.defaultMuted = true;
+        video.volume = 0;
+        video.playsInline = true;
+
+        video.setAttribute("muted", "");
+        video.setAttribute("playsinline", "");
+        video.setAttribute("webkit-playsinline", "");
+
+    }
+
 
     function playVideo() {
 
@@ -671,21 +618,147 @@
             return;
         }
 
-        video.muted = true;
+        prepareVideo();
 
-        const promise = video.play();
-
-        if (promise) {
-            promise.catch(function () {});
+        /*
+         * If the browser has not loaded enough data yet,
+         * wait for the media element to become ready.
+         */
+        if (video.readyState < 2) {
+            return;
         }
+
+        const playPromise = video.play();
+
+        if (playPromise !== undefined) {
+
+            playPromise.catch(function () {
+
+                /*
+                 * Autoplay can be rejected by the browser.
+                 * The canplay/loadeddata/visibility handlers
+                 * below will attempt playback again.
+                 */
+
+            });
+
+        }
+
     }
 
 
+    /*
+     * Prepare the video immediately.
+     */
+    prepareVideo();
+
+
+    /*
+     * Explicitly load the MP4.
+     * The source is already assigned directly
+     * to the video element above.
+     */
+    video.load();
+
+
+    /*
+     * Try playback whenever enough media data
+     * has become available.
+     */
+    video.addEventListener(
+        "loadedmetadata",
+        function () {
+            prepareVideo();
+        }
+    );
+
+
+    video.addEventListener(
+        "loadeddata",
+        function () {
+            prepareVideo();
+            playVideo();
+        }
+    );
+
+
+    video.addEventListener(
+        "canplay",
+        function () {
+            prepareVideo();
+            playVideo();
+        }
+    );
+
+
+    video.addEventListener(
+        "canplaythrough",
+        function () {
+            prepareVideo();
+            playVideo();
+        }
+    );
+
+
+    /*
+     * Initial attempt.
+     */
     playVideo();
 
+
+    /*
+     * Try again after the complete page has loaded.
+     */
     window.addEventListener(
         "load",
-        playVideo
+        function () {
+
+            prepareVideo();
+            playVideo();
+
+        }
+    );
+
+
+    /*
+     * If Safari temporarily pauses/rejects playback
+     * while the page is hidden, retry when visible.
+     */
+    document.addEventListener(
+        "visibilitychange",
+        function () {
+
+            if (!document.hidden) {
+
+                prepareVideo();
+                playVideo();
+
+            }
+
+        }
+    );
+
+
+    /*
+     * If the video somehow becomes paused while
+     * the page is visible, try to resume it.
+     */
+    video.addEventListener(
+        "pause",
+        function () {
+
+            if (!document.hidden) {
+
+                setTimeout(
+                    function () {
+                        playVideo();
+                    },
+                    100
+                );
+
+            }
+
+        }
     );
 
 
@@ -696,7 +769,9 @@
     if (skipIntro) {
 
         if (quote) {
+
             quote.style.display = "none";
+
         }
 
         if (brand) {
@@ -707,6 +782,7 @@
 
             brand.style.transform =
                 "translate(-50%, -50%) scale(1)";
+
         }
 
         if (buttons) {
@@ -717,19 +793,25 @@
 
             buttons.style.transform =
                 "translate(-50%, 0)";
+
         }
 
     } else {
 
         /* Remove quote */
 
-        setTimeout(function () {
+        setTimeout(
+            function () {
 
-            if (quote) {
-                quote.classList.add("exit");
-            }
+                if (quote) {
 
-        }, 4000);
+                    quote.classList.add("exit");
+
+                }
+
+            },
+            4000
+        );
 
 
         /* =================================
@@ -740,15 +822,20 @@
         if (authenticated) {
 
             if (buttons) {
+
                 buttons.style.display = "none";
+
             }
 
-            setTimeout(function () {
+            setTimeout(
+                function () {
 
-                window.location.href =
-                    "{{ url_for('home') }}";
+                    window.location.href =
+                        "{{ url_for('home') }}";
 
-            }, 7000);
+                },
+                7000
+            );
 
         }
 
