@@ -14,6 +14,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import timedelta
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 import certifi
 from cryptography.fernet import Fernet, InvalidToken
@@ -23,9 +24,11 @@ from flask import (
     flash,
     g,
     jsonify,
+    make_response,
     redirect,
     render_template,
     request,
+    send_from_directory,
     session,
     url_for,
 )
@@ -83,6 +86,14 @@ _ALLOWED_DATA_KEYS = {
     "focusflow_selected_goal",
     "focusflow_reminder_schedule",
 }
+_NOTIFICATION_CATEGORIES = {
+    "morning",
+    "night",
+    "incomplete_goals",
+    "streak",
+    "completion",
+    "comeback",
+}
 
 
 class SupabaseError(Exception):
@@ -132,7 +143,7 @@ def _auth_request(path: str, *, body=None, method="POST", access_token=None):
     )
 
 
-def _supabase_admin_request(path: str, *, method="GET", body=None):
+def _supabase_admin_request(path: str, *, method="GET", body=None, extra_headers=None):
     if not SUPABASE_URL:
         raise SupabaseError("Supabase is not configured on this server.", 503)
     service_key = SUPABASE_SERVICE_ROLE_KEY
@@ -144,6 +155,8 @@ def _supabase_admin_request(path: str, *, method="GET", body=None):
         "Content-Type": "application/json",
         "Accept": "application/json",
     }
+    if extra_headers:
+        headers.update(extra_headers)
     payload = None if body is None else json.dumps(body).encode("utf-8")
     req = urllib.request.Request(
         f"{SUPABASE_URL}{path}", data=payload, headers=headers, method=method
@@ -480,7 +493,25 @@ def reset_password(unused_token=None):
 
 @app.route("/logout", methods=["GET", "POST"])
 def logout():
+    user = _current_user()
     auth_session = _read_auth_session() or {}
+    if user:
+        user_query = _notification_user_query(user["id"])
+        try:
+            _supabase_admin_request(
+                "/rest/v1/focusflow_notification_preferences?" + user_query,
+                method="PATCH",
+                body={"enabled": False},
+            )
+        except SupabaseError:
+            app.logger.warning("Could not disable notification preferences during logout")
+        try:
+            _supabase_admin_request(
+                "/rest/v1/focusflow_push_subscriptions?" + user_query,
+                method="DELETE",
+            )
+        except SupabaseError:
+            app.logger.warning("Could not remove push subscriptions during logout")
     if auth_session.get("access_token"):
         try:
             _auth_request("logout", access_token=auth_session["access_token"])
@@ -516,6 +547,161 @@ def user_data():
     except SupabaseError as error:
         app.logger.exception("Could not save FocusFlow user data")
         return jsonify({"error": str(error)}), error.status
+
+
+def _notification_user_query(user_id):
+    return urllib.parse.urlencode({"user_id": f"eq.{user_id}"})
+
+
+def _notifications_csrf_is_valid():
+    expected = session.get("settings_csrf_token", "")
+    supplied = request.headers.get("X-CSRF-Token", "")
+    return bool(expected and supplied and secrets.compare_digest(expected, supplied))
+
+
+def _is_supported_push_endpoint(endpoint):
+    try:
+        parsed = urllib.parse.urlsplit(endpoint)
+        host = (parsed.hostname or "").lower()
+        return parsed.scheme == "https" and parsed.port in (None, 443) and (
+            host in {
+                "fcm.googleapis.com",
+                "web.push.apple.com",
+                "updates.push.services.mozilla.com",
+            }
+            or host.endswith(".notify.windows.com")
+        )
+    except ValueError:
+        return False
+
+
+@app.route("/api/notifications/config", methods=["GET"])
+def notification_config():
+    user = _current_user()
+    if not user:
+        return jsonify({"error": "Authentication required."}), 401
+    user_query = _notification_user_query(user["id"])
+    try:
+        preferences = _supabase_admin_request(
+            "/rest/v1/focusflow_notification_preferences?select=enabled,timezone,categories&"
+            + user_query + "&limit=1"
+        ) or []
+        subscriptions = _supabase_admin_request(
+            "/rest/v1/focusflow_push_subscriptions?select=endpoint_hash&"
+            + user_query + "&limit=1"
+        ) or []
+        saved = preferences[0] if preferences else {}
+        return jsonify({
+            "publicKey": os.environ.get("NOTIFICATION_VAPID_PUBLIC_KEY", ""),
+            "enabled": bool(saved.get("enabled", False)),
+            "timezone": saved.get("timezone", "UTC"),
+            "categories": saved.get("categories") or {name: True for name in _NOTIFICATION_CATEGORIES},
+            "hasSubscription": bool(subscriptions),
+        })
+    except SupabaseError as error:
+        return jsonify({"error": str(error)}), error.status
+
+
+@app.route("/api/notifications/subscriptions", methods=["POST"])
+def save_notification_subscription():
+    user = _current_user()
+    if not user:
+        return jsonify({"error": "Authentication required."}), 401
+    if not _notifications_csrf_is_valid():
+        return jsonify({"error": "This page expired. Refresh and try again."}), 400
+
+    payload = request.get_json(silent=True) or {}
+    subscription = payload.get("subscription")
+    endpoint = subscription.get("endpoint") if isinstance(subscription, dict) else None
+    keys = subscription.get("keys") if isinstance(subscription, dict) else None
+    if not isinstance(endpoint, str) or len(endpoint) > 2048:
+        return jsonify({"error": "The push subscription is invalid."}), 400
+    if not _is_supported_push_endpoint(endpoint):
+        return jsonify({"error": "This browser push service is not supported."}), 400
+    p256dh = keys.get("p256dh") if isinstance(keys, dict) else None
+    auth_key = keys.get("auth") if isinstance(keys, dict) else None
+    if (not isinstance(p256dh, str) or not isinstance(auth_key, str)
+            or not re.fullmatch(r"[A-Za-z0-9_-]{20,200}", p256dh)
+            or not re.fullmatch(r"[A-Za-z0-9_-]{8,100}", auth_key)):
+        return jsonify({"error": "The push encryption keys are invalid."}), 400
+
+    endpoint_hash = hashlib.sha256(endpoint.encode("utf-8")).hexdigest()
+    try:
+        registered = _supabase_admin_request(
+            "/rest/v1/rpc/focusflow_register_push_subscription",
+            method="POST",
+            body={
+                "p_endpoint_hash": endpoint_hash,
+                "p_user_id": user["id"],
+                "p_endpoint": endpoint,
+                "p_p256dh": p256dh,
+                "p_auth_key": auth_key,
+            },
+        )
+        if registered is not True:
+            return jsonify({"error": "This device subscription is registered to another account. Log out of that account first."}), 409
+        return jsonify({"ok": True})
+    except SupabaseError as error:
+        return jsonify({"error": str(error)}), error.status
+
+
+@app.route("/api/notifications/preferences", methods=["POST"])
+def save_notification_preferences():
+    user = _current_user()
+    if not user:
+        return jsonify({"error": "Authentication required."}), 401
+    if not _notifications_csrf_is_valid():
+        return jsonify({"error": "This page expired. Refresh and try again."}), 400
+
+    payload = request.get_json(silent=True) or {}
+    enabled = payload.get("enabled") is True
+    timezone_name = payload.get("timezone")
+    try:
+        if not isinstance(timezone_name, str) or len(timezone_name) > 100:
+            raise ZoneInfoNotFoundError(timezone_name)
+        ZoneInfo(timezone_name)
+    except (ZoneInfoNotFoundError, ValueError, TypeError):
+        return jsonify({"error": "Choose a valid IANA timezone."}), 400
+
+    raw_categories = payload.get("categories")
+    raw_categories = raw_categories if isinstance(raw_categories, dict) else {}
+    categories = {
+        name: raw_categories.get(name) is True
+        for name in _NOTIFICATION_CATEGORIES
+    }
+    user_query = _notification_user_query(user["id"])
+    try:
+        if enabled:
+            subscriptions = _supabase_admin_request(
+                "/rest/v1/focusflow_push_subscriptions?select=endpoint_hash&"
+                + user_query + "&limit=1"
+            ) or []
+            if not subscriptions:
+                return jsonify({"error": "Enable push notifications on this device first."}), 400
+        _supabase_admin_request(
+            "/rest/v1/focusflow_notification_preferences?on_conflict=user_id",
+            method="POST",
+            body={
+                "user_id": user["id"],
+                "enabled": enabled,
+                "timezone": timezone_name,
+                "categories": categories,
+            },
+            extra_headers={"Prefer": "resolution=merge-duplicates,return=minimal"},
+        )
+        return jsonify({"ok": True, "enabled": enabled, "categories": categories})
+    except SupabaseError as error:
+        return jsonify({"error": str(error)}), error.status
+
+
+@app.route("/service-worker.js")
+def service_worker():
+    response = make_response(send_from_directory(
+        app.static_folder, "service-worker.js", mimetype="application/javascript"
+    ))
+    response.headers["Service-Worker-Allowed"] = "/"
+    response.headers["Cache-Control"] = "no-cache"
+    return response
 
 
 def _require_user():
@@ -616,6 +802,16 @@ def delete_account():
 
     user_id = user["id"]
     try:
+        user_query = _notification_user_query(user_id)
+        _supabase_admin_request(
+            "/rest/v1/focusflow_notification_preferences?" + user_query,
+            method="PATCH",
+            body={"enabled": False},
+        )
+        _supabase_admin_request(
+            "/rest/v1/focusflow_push_subscriptions?" + user_query,
+            method="DELETE",
+        )
         _supabase_admin_request(
             "/rest/v1/focusflow_user_data?user_id=eq."
             + urllib.parse.quote(user_id, safe=""),
@@ -623,12 +819,12 @@ def delete_account():
         )
     except SupabaseError as error:
         app.logger.error(
-            "Could not delete FocusFlow data for account: user_id=%s status=%s message=%s",
+            "Could not disable account notifications or delete its FocusFlow data: user_id=%s status=%s message=%s",
             user_id,
             error.status,
             str(error),
         )
-        flash("Your account could not be deleted. Your data is unchanged; please try again later.", "error")
+        flash("Your account could not be deleted. Your goal data was not removed; please try again later.", "error")
         return redirect(url_for("settings"))
 
     try:

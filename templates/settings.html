@@ -73,6 +73,33 @@
         </a>
     </section>
 
+    <section class="settings-section vellum-card" id="notificationSettings" data-csrf-token="{{ csrf_token }}">
+        <div class="settings-section-heading">
+            <p class="section-label">PREFERENCES</p>
+            <h2>Push notifications</h2>
+            <p class="section-subtitle">Choose which FocusFlow reminders can reach this device when the app is closed.</p>
+        </div>
+        <p id="notificationPermissionState" class="section-subtitle" role="status" aria-live="polite">Checking notification support…</p>
+        <div class="settings-notification-toggle-row">
+            <label class="settings-notification-toggle" for="notificationsEnabled">
+                <input id="notificationsEnabled" type="checkbox" role="switch" aria-label="Account notification preference">
+                <span class="settings-notification-switch" aria-hidden="true"></span>
+                <span>Account notification preference</span>
+            </label>
+            <span id="notificationsToggleState" class="settings-notification-toggle-state" aria-live="polite">Off</span>
+        </div>
+        <fieldset class="settings-field">
+            <legend>Notification types</legend>
+            <label><input type="checkbox" data-notification-category="morning"> Morning goal reminder</label>
+            <label><input type="checkbox" data-notification-category="night"> Night goal reminder</label>
+            <label><input type="checkbox" data-notification-category="incomplete_goals"> Incomplete goals</label>
+            <label><input type="checkbox" data-notification-category="streak"> Streak reminder</label>
+            <label><input type="checkbox" data-notification-category="completion"> Goal completion</label>
+            <label><input type="checkbox" data-notification-category="comeback"> Comeback reminder</label>
+        </fieldset>
+        <button id="saveNotificationPreferences" type="button" class="primary-action-button" disabled>Save Changes</button>
+    </section>
+
     <section class="settings-section vellum-card">
         <div class="settings-section-heading">
             <p class="section-label">SESSION</p>
@@ -107,4 +134,8 @@
     </section>
 
 </main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/notifications.js') }}" defer></script>
 {% endblock %}

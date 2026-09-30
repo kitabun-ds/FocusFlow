@@ -4353,6 +4353,92 @@ p {
     font-size: 13px;
 }
 
+.settings-notification-toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 15px 0 18px;
+}
+
+.settings-notification-toggle {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 11px;
+    margin: 0 !important;
+    color: #45464d !important;
+    cursor: pointer;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+}
+
+.settings-notification-toggle input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    min-height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+}
+
+.settings-notification-switch {
+    position: relative;
+    flex: 0 0 42px;
+    width: 42px;
+    height: 24px;
+    border: 1px solid #aebbc3;
+    border-radius: 999px;
+    background: #d8dfe3;
+    transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.settings-notification-switch::after {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 10, 36, 0.22);
+    content: "";
+    transition: transform 160ms ease;
+}
+
+.settings-notification-toggle input:checked + .settings-notification-switch {
+    border-color: #4c8295;
+    background: #5b8fab;
+}
+
+.settings-notification-toggle input:checked + .settings-notification-switch::after {
+    transform: translateX(18px);
+}
+
+.settings-notification-toggle input:focus-visible + .settings-notification-switch {
+    outline: 3px solid rgba(76, 130, 149, 0.3);
+    outline-offset: 2px;
+}
+
+.settings-notification-toggle input:disabled + .settings-notification-switch {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+.settings-notification-toggle-state {
+    min-width: 34px;
+    color: #75777e;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: right;
+}
+
+.settings-notification-toggle-state.is-on {
+    color: #24695a;
+}
+
 .settings-password-form button {
     justify-self: start;
     min-height: 40px;

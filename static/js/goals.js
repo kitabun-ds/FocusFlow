@@ -718,10 +718,13 @@ async function saveGoal(id) {
     */
 
     goal.invested = 0;
-    if (!goal.createdAt || !goal.expiresAt) {
-        const createdAt = new Date();
-        goal.createdAt = createdAt.toISOString();
-        goal.expiresAt = new Date(createdAt.getTime() + 24 * 60 * 60 * 1000).toISOString();
+    const createdAtMs = Date.parse(goal.createdAt || "");
+    const expiresAtMs = Date.parse(goal.expiresAt || "");
+    if (!Number.isFinite(createdAtMs)) {
+        goal.createdAt = new Date().toISOString();
+    }
+    if (!Number.isFinite(expiresAtMs)) {
+        goal.expiresAt = new Date(Date.parse(goal.createdAt) + 24 * 60 * 60 * 1000).toISOString();
     }
 
 

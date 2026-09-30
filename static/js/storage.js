@@ -105,10 +105,6 @@
                 : null;
             if (!savedGoal) return;
             if (record.updatedAt && Number.isFinite(Date.parse(record.updatedAt))) candidates.push(Date.parse(record.updatedAt));
-            else if (/^\d{4}-\d{2}-\d{2}$/.test(record.date || key)) {
-                const [year, month, day] = (record.date || key).split("-").map(Number);
-                candidates.push(new Date(year, month - 1, day).getTime());
-            }
         });
         if (!candidates.length) return null;
         return new Date(Math.min(...candidates)).toISOString();
@@ -443,9 +439,14 @@
 
         // Track page initialization may create a snapshot, but only actual user
         // actions should count toward activity analytics such as streaks.
-        record.activity = previous.activity === true
-            || event.activity === true
+        const meaningfulEvent = event.activity === true
             || Boolean(event.session && Number(event.session.seconds) > 0);
+        record.activity = previous.activity === true || meaningfulEvent;
+        record.lastMeaningfulActivityAt = meaningfulEvent
+            ? (event.session && Number(event.session.seconds) > 0
+                ? event.session.at || now.toISOString()
+                : now.toISOString())
+            : previous.lastMeaningfulActivityAt || null;
 
         if (Object.prototype.hasOwnProperty.call(event, "reflection")) {
             record.reflection = String(event.reflection || "").trim();
