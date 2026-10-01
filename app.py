@@ -258,7 +258,7 @@ def _current_user():
             "token?grant_type=refresh_token",
             body={"refresh_token": auth_session["refresh_token"]},
         )
-        _store_auth_session(refreshed)
+        _store_auth_session(refreshed, remember_me=session.permanent)
         response = _auth_request(
             "user", method="GET", access_token=refreshed["access_token"]
         )
@@ -362,6 +362,7 @@ def login():
         return render_template("login.html")
     email = request.form.get("email", "").strip().lower()
     password = request.form.get("password", "")
+    remember_me = request.form.get("remember_me") == "on"
     if not is_valid_email(email) or not password:
         flash("Please enter a valid email address and password.", "error")
         return redirect(url_for("login"))
@@ -371,7 +372,7 @@ def login():
         )
         if not result or not result.get("access_token"):
             raise SupabaseError("Login could not be completed.", 401)
-        _store_auth_session(result, remember_me=True)
+        _store_auth_session(result, remember_me=remember_me)
         return redirect(url_for("home"))
     except SupabaseError as error:
         flash("Incorrect email or password." if error.status in {400, 401} else str(error), "error")
